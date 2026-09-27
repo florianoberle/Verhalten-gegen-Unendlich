@@ -3,18 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Verhalten für x → ∞</title>
-
+<title>Verhalten für x &rarr; &infin;</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* CMU Sans Serif direkt per Base64 eingebunden (100% lade- und github-sicher) */
-@font-face {
-  font-family: 'CMU Sans Serif';
-  src: url('https://cdn.jsdelivr.net/gh/dr-pro/font-cmu@1.0.1/sans-serif.woff') format('woff'),
-       url('https://cdn.jsdelivr.net/npm/font-cmu@1.0.1/sans-serif.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
 :root{
   --paper:#f8f9fa; --ink:#1e293b; --ink-soft:#64748b;
   --red:#dc2626; --blue:#2563eb; --green:#16a34a; --gold:#fef08a;
@@ -24,9 +16,7 @@
 *{box-sizing:border-box;}
 html{scroll-padding-top:env(safe-area-inset-top,0px);}
 body{
-  margin:0; 
-  font-family: 'CMU Sans Serif', Arial, sans-serif; 
-  color:var(--ink);
+  margin:0; font-family:'Inter', system-ui, -apple-system, sans-serif; color:var(--ink);
   background:var(--paper);
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
   min-height:100%;
@@ -39,13 +29,13 @@ header p{margin:0;color:var(--ink-soft);font-size:1.05rem;max-width:65ch;line-he
 .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem 1.6rem;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
 .inputRow{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;}
 .inputRow label{font-weight:600;font-size:1.2rem;color:var(--ink);}
-#fx{flex:1;min-width:220px;font-size:1.1rem;font-family:'CMU Sans Serif', sans-serif;padding:.65rem .9rem;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color 0.2s;}
+#fx{flex:1;min-width:220px;font-size:1.1rem;font-family:'Inter', sans-serif;padding:.65rem .9rem;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color 0.2s;}
 #fx:focus{outline:none;border-color:var(--blue);}
 
 .examplesContainer{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;}
 .examplesLabel{font-weight:600;font-size:.9rem;color:var(--ink-soft);}
 .chips{display:flex;gap:.5rem;flex-wrap:wrap;}
-.chip{border:1px solid var(--line);background:#f1f5f9;color:var(--ink);border-radius:8px;padding:.4rem .8rem;font-size:.85rem;font-weight:500;cursor:pointer;font-family:'CMU Sans Serif', sans-serif;transition:all 0.15s ease;}
+.chip{border:1px solid var(--line);background:#f1f5f9;color:var(--ink);border-radius:8px;padding:.4rem .8rem;font-size:.85rem;font-weight:500;cursor:pointer;font-family:'Inter', sans-serif;transition:all 0.15s ease;}
 .chip:hover{border-color:var(--blue);background:#eff6ff;color:var(--blue);}
 .errMsg{color:var(--red);font-size:.9rem;margin-top:.5rem;min-height:1.2em;}
 
@@ -64,6 +54,7 @@ canvas{width:100%;height:380px;display:block;border-radius:8px;}
 .formula{font-size:1.25rem;letter-spacing:.01em;font-weight:500;}
 .formula .lead{background:var(--gold);padding:.1em .3em;border-radius:6px;font-weight:700;}
 
+/* Stats untereinander anordnen */
 .stats{display:flex;flex-direction:column;gap:.4rem;font-size:.95rem;margin-top:.8rem;color:var(--ink-soft);line-height:1.4;}
 .stats b{color:var(--ink);}
 
@@ -72,15 +63,18 @@ canvas{width:100%;height:380px;display:block;border-radius:8px;}
 .limits .minus{color:var(--green);font-weight:600;}
 .limits .res{font-weight:700;}
 
+/* Merke-Tabelle ohne äußere Ränder und ohne grauen Hintergrund */
 table.merke{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.4rem;border-style:hidden;}
 table.merke th,table.merke td{border:1px solid var(--line);padding:.5rem .4rem;text-align:center;}
 table.merke thead th{background:transparent;font-weight:600;color:var(--ink-soft);}
 
+/* Zeilenfarben für Tabelle */
 table.merke tr.row-plus {background-color: var(--blue-bg);}
 table.merke tr.row-plus th.rowh {color: var(--blue); font-weight: 600;}
 table.merke tr.row-minus {background-color: var(--green-bg);}
 table.merke tr.row-minus th.rowh {color: var(--green); font-weight: 600;}
 
+/* Aktive Zelle überdeckt Zeilenfarbe */
 table.merke td.active,table.merke th.active{background:var(--gold) !important;color:var(--ink);}
 table.merke th.rowh{text-align:left;padding-left:.6rem;background:transparent;}
 </style>
@@ -88,7 +82,7 @@ table.merke th.rowh{text-align:left;padding-left:.6rem;background:transparent;}
 <body>
 <div class="wrap">
 <header>
-  <h1>Verhalten für x → ∞</h1>
+  <h1>Verhalten für x &rarr; &infin;</h1>
   <p>Gib eine ganzrationale Funktion ein und beobachte, wie ihr Verhalten für x → ±∞ ausschließlich vom Summanden mit der größten Hochzahl bestimmt wird.</p>
 </header>
 
@@ -252,7 +246,7 @@ function draw(terms, cls){
   ctx.moveTo(originX, 15); ctx.lineTo(originX-5, 23); ctx.lineTo(originX+5, 23); ctx.closePath();
   ctx.fill();
 
-  ctx.font='500 13px "CMU Sans Serif", sans-serif';
+  ctx.font='500 13px Inter, sans-serif';
   ctx.fillText('x', W-22, originY-10); ctx.fillText('y', originX+10, 22); ctx.fillText('O', originX+6, originY+18);
 
   // Graph zeichnen
@@ -278,7 +272,7 @@ function draw(terms, cls){
     ctx.beginPath(); ctx.moveTo(x,originY-dir*30); ctx.lineTo(x,lineEnd); ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(x,yTop); ctx.lineTo(x-6,yTop+dir*10); ctx.lineTo(x+6,yTop+dir*10); ctx.closePath(); ctx.fill();
-    ctx.font='600 13px "CMU Sans Serif", sans-serif';
+    ctx.font='600 13px Inter, sans-serif';
     ctx.fillText(label, x-14, dir>0? yTop-8 : yTop+22);
   }
   if(cls && !cls.zero && !cls.constant){
@@ -307,6 +301,7 @@ function update(){
     statsEl.innerHTML = '<div>Grad n = 0 (konstante Funktion).</div>';
     limEl.innerHTML = '<div>Kein Verhalten gegen ±∞ &ndash; f(x) bleibt konstant bei '+fmtNum(cls.value)+'.</div>';
   } else {
+    // Grad und Leitkoeffizient untereinander strukturiert
     statsEl.innerHTML = 
       '<div>Grad <b>n = '+fmtNum(cls.n)+'</b> ('+(cls.nEven?'gerade':'ungerade')+')</div>'+
       '<div>Leitkoeffizient <b>aₙ = '+fmtNum(cls.an)+'</b> ('+(cls.aPos?'positiv':'negativ')+')</div>';
@@ -321,11 +316,6 @@ function update(){
   }
   draw(terms, cls.zero||cls.constant?null:cls);
 }
-
-// Stellt sicher, dass das Koordinatensystem neu gezeichnet wird, sobald die Schrift geladen ist
-document.fonts.ready.then(() => {
-  update();
-});
 
 fxInput.addEventListener('input', update);
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{fxInput.value=c.dataset.f; update();}));
