@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Verhalten für x → ∞</title>
+<title>Verhalten für x &rarr; &infty;</title>
 
-<!-- CMU Sans Serif Einbindung via CDN -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu@1.0.1/sans-serif.css">
+<!-- Robuste Einbindung der Computer Modern Sans Serif für GitHub Pages -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=CMU+Sans+Serif:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -19,7 +21,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px);}
 body{
   margin:0; 
-  font-family:'CMU Sans Serif', system-ui, -apple-system, sans-serif; 
+  font-family: 'CMU Sans Serif', 'Computer Modern Sans', sans-serif; 
   color:var(--ink);
   background:var(--paper);
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
@@ -82,7 +84,7 @@ table.merke th.rowh{text-align:left;padding-left:.6rem;background:transparent;}
 <body>
 <div class="wrap">
 <header>
-  <h1>Verhalten für x → ∞</h1>
+  <h1>Verhalten im Unendlichen</h1>
   <p>Gib eine ganzrationale Funktion ein und beobachte, wie ihr Verhalten für x → ±∞ ausschließlich vom Summanden mit der größten Hochzahl bestimmt wird.</p>
 </header>
 
@@ -315,6 +317,11 @@ function update(){
   }
   draw(terms, cls.zero||cls.constant?null:cls);
 }
+
+// Prüfe ob Schriftart geladen ist und zeichne Canvas bei Bedarf neu
+document.fonts.ready.then(() => {
+  update();
+});
 
 fxInput.addEventListener('input', update);
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{fxInput.value=c.dataset.f; update();}));
