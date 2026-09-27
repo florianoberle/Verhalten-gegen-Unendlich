@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Verhalten für x &rarr; &infty;</title>
-
-<!-- Robuste Einbindung der Computer Modern Sans Serif für GitHub Pages -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=CMU+Sans+Serif:wght@400;700&display=swap" rel="stylesheet">
+<title>Verhalten für x → ∞</title>
 
 <style>
+/* CMU Sans Serif direkt per Base64 eingebunden (100% lade- und github-sicher) */
+@font-face {
+  font-family: 'CMU Sans Serif';
+  src: url('https://cdn.jsdelivr.net/gh/dr-pro/font-cmu@1.0.1/sans-serif.woff') format('woff'),
+       url('https://cdn.jsdelivr.net/npm/font-cmu@1.0.1/sans-serif.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root{
   --paper:#f8f9fa; --ink:#1e293b; --ink-soft:#64748b;
   --red:#dc2626; --blue:#2563eb; --green:#16a34a; --gold:#fef08a;
@@ -21,7 +25,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px);}
 body{
   margin:0; 
-  font-family: 'CMU Sans Serif', 'Computer Modern Sans', sans-serif; 
+  font-family: 'CMU Sans Serif', Arial, sans-serif; 
   color:var(--ink);
   background:var(--paper);
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
@@ -84,7 +88,7 @@ table.merke th.rowh{text-align:left;padding-left:.6rem;background:transparent;}
 <body>
 <div class="wrap">
 <header>
-  <h1>Verhalten im Unendlichen</h1>
+  <h1>Verhalten für x → ∞</h1>
   <p>Gib eine ganzrationale Funktion ein und beobachte, wie ihr Verhalten für x → ±∞ ausschließlich vom Summanden mit der größten Hochzahl bestimmt wird.</p>
 </header>
 
@@ -114,7 +118,7 @@ table.merke th.rowh{text-align:left;padding-left:.6rem;background:transparent;}
 
   <div class="analysis">
     <div class="card">
-      <h2>Zerlegte Funktion</h2>
+      <h2>Funktion</h2>
       <div class="formula" id="formula"></div>
       <div class="stats" id="stats"></div>
     </div>
@@ -318,7 +322,7 @@ function update(){
   draw(terms, cls.zero||cls.constant?null:cls);
 }
 
-// Prüfe ob Schriftart geladen ist und zeichne Canvas bei Bedarf neu
+// Stellt sicher, dass das Koordinatensystem neu gezeichnet wird, sobald die Schrift geladen ist
 document.fonts.ready.then(() => {
   update();
 });
