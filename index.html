@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verhalten für x → ∞</title>
+
+<!-- CMU Sans Serif Einbindung via CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-cmu@1.0.1/sans-serif.css">
+
+<style>
+:root{
+  --paper:#f8f9fa; --ink:#1e293b; --ink-soft:#64748b;
+  --red:#dc2626; --blue:#2563eb; --green:#16a34a; --gold:#fef08a;
+  --blue-bg:#eff6ff; --green-bg:#f0fdf4;
+  --line:#e2e8f0; --card:#ffffff;
+}
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  margin:0; 
+  font-family:'CMU Sans Serif', system-ui, -apple-system, sans-serif; 
+  color:var(--ink);
+  background:var(--paper);
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  min-height:100%;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:2.2rem 1.4rem 4rem;}
+header{margin-bottom:1.8rem;}
+h1{font-size:2.4rem;font-weight:700;margin:0 0 .4rem;color:var(--ink);line-height:1.2;letter-spacing:-0.02em;}
+header p{margin:0;color:var(--ink-soft);font-size:1.05rem;max-width:65ch;line-height:1.5;}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem 1.6rem;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
+.inputRow{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;}
+.inputRow label{font-weight:600;font-size:1.2rem;color:var(--ink);}
+#fx{flex:1;min-width:220px;font-size:1.1rem;font-family:'CMU Sans Serif', sans-serif;padding:.65rem .9rem;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color 0.2s;}
+#fx:focus{outline:none;border-color:var(--blue);}
+
+.examplesContainer{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;}
+.examplesLabel{font-weight:600;font-size:.9rem;color:var(--ink-soft);}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;}
+.chip{border:1px solid var(--line);background:#f1f5f9;color:var(--ink);border-radius:8px;padding:.4rem .8rem;font-size:.85rem;font-weight:500;cursor:pointer;font-family:'CMU Sans Serif', sans-serif;transition:all 0.15s ease;}
+.chip:hover{border-color:var(--blue);background:#eff6ff;color:var(--blue);}
+.errMsg{color:var(--red);font-size:.9rem;margin-top:.5rem;min-height:1.2em;}
+
+.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:1.4rem;margin-top:1.4rem;}
+@media(max-width:860px){.grid{grid-template-columns:1fr;}}
+
+.graphCard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.2rem;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
+canvas{width:100%;height:380px;display:block;border-radius:8px;}
+.axisLegend{display:flex;justify-content:space-between;font-size:.9rem;margin-top:.6rem;padding:0 .3rem;}
+.axisLegend .l{color:var(--green);font-weight:600;}
+.axisLegend .r{color:var(--blue);font-weight:600;}
+
+.analysis{display:flex;flex-direction:column;gap:1rem;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.2rem 1.4rem;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
+.card h2{font-size:1.25rem;font-weight:700;margin:0 0 .6rem;color:var(--ink);letter-spacing:-0.01em;}
+.formula{font-size:1.25rem;letter-spacing:.01em;font-weight:500;}
+.formula .lead{background:var(--gold);padding:.1em .3em;border-radius:6px;font-weight:700;}
+
+.stats{display:flex;flex-direction:column;gap:.4rem;font-size:.95rem;margin-top:.8rem;color:var(--ink-soft);line-height:1.4;}
+.stats b{color:var(--ink);}
+
+.limits div{font-size:1.1rem;margin:.4rem 0;}
+.limits .plus{color:var(--blue);font-weight:600;}
+.limits .minus{color:var(--green);font-weight:600;}
+.limits .res{font-weight:700;}
+
+table.merke{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.4rem;border-style:hidden;}
+table.merke th,table.merke td{border:1px solid var(--line);padding:.5rem .4rem;text-align:center;}
+table.merke thead th{background:transparent;font-weight:600;color:var(--ink-soft);}
+
+table.merke tr.row-plus {background-color: var(--blue-bg);}
+table.merke tr.row-plus th.rowh {color: var(--blue); font-weight: 600;}
+table.merke tr.row-minus {background-color: var(--green-bg);}
+table.merke tr.row-minus th.rowh {color: var(--green); font-weight: 600;}
+
+table.merke td.active,table.merke th.active{background:var(--gold) !important;color:var(--ink);}
+table.merke th.rowh{text-align:left;padding-left:.6rem;background:transparent;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Verhalten für x → ∞</h1>
+  <p>Gib eine ganzrationale Funktion ein und beobachte, wie ihr Verhalten für x → ±∞ ausschließlich vom Summanden mit der größten Hochzahl bestimmt wird.</p>
+</header>
+
+<div class="panel">
+  <div class="inputRow">
+    <label for="fx">f(x) =</label>
+    <input id="fx" type="text" value="x^3 - 3x^2 - x + 3" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="examplesContainer">
+    <span class="examplesLabel">Beispiele:</span>
+    <div class="chips">
+      <button class="chip" data-f="x^2-4">x² − 4</button>
+      <button class="chip" data-f="-x^2+3x+2">−x² + 3x + 2</button>
+      <button class="chip" data-f="0.5x^3-2x">0.5x³ − 2x</button>
+      <button class="chip" data-f="-0.2x^4+2x^2">−0.2x⁴ + 2x²</button>
+      <button class="chip" data-f="-x^5+3x^3-x">−x⁵ + 3x³ − x</button>
+    </div>
+  </div>
+  <div class="errMsg" id="err"></div>
+</div>
+
+<div class="grid">
+  <div class="graphCard">
+    <canvas id="cv"></canvas>
+    <div class="axisLegend"><span class="l">x → −∞</span><span class="r">x → ∞</span></div>
+  </div>
+
+  <div class="analysis">
+    <div class="card">
+      <h2>Zerlegte Funktion</h2>
+      <div class="formula" id="formula"></div>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="card">
+      <h2>Grenzverhalten</h2>
+      <div class="limits" id="limits"></div>
+    </div>
+    <div class="card">
+      <h2>Merke-Tabelle</h2>
+      <table class="merke" id="merke">
+        <thead><tr><th></th><th>n gerade,<br>aₙ pos.</th><th>n gerade,<br>aₙ neg.</th><th>n ungerade,<br>aₙ pos.</th><th>n ungerade,<br>aₙ neg.</th></tr></thead>
+        <tbody>
+          <tr class="row-plus"><th class="rowh">x → +∞</th><td>∞</td><td>−∞</td><td>∞</td><td>−∞</td></tr>
+          <tr class="row-minus"><th class="rowh">x → −∞</th><td>∞</td><td>−∞</td><td>−∞</td><td>∞</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const fxInput = document.getElementById('fx');
+const errBox = document.getElementById('err');
+const canvas = document.getElementById('cv');
+const ctx = canvas.getContext('2d');
+
+function parsePoly(str){
+  let s = str.replace(/\s+/g,'').replace(/\*\*/g,'^').replace(/\*/g,'');
+  if(s==='') throw 'Bitte eine Funktion eingeben.';
+  if(!/^[+-]/.test(s)) s = '+'+s;
+  const terms = s.match(/[+-][^+-]+/g);
+  if(!terms) throw 'Ausdruck konnte nicht gelesen werden.';
+  const map = {};
+  for(const t of terms){
+    const sign = t[0]==='-' ? -1 : 1;
+    let rest = t.slice(1);
+    if(!/^[0-9.]*x?(\^[0-9.]+)?$/.test(rest) || rest==='') throw 'Ungültiger Term: '+t;
+    let coef, exp;
+    if(rest.includes('x')){
+      const parts = rest.split('x');
+      coef = parts[0]==='' ? 1 : parseFloat(parts[0]);
+      const expPart = parts[1];
+      exp = (expPart && expPart.startsWith('^')) ? parseFloat(expPart.slice(1)) : 1;
+    } else {
+      coef = parseFloat(rest); exp = 0;
+    }
+    coef *= sign;
+    if(isNaN(coef)||isNaN(exp)) throw 'Ungültiger Term: '+t;
+    map[exp] = (map[exp]||0) + coef;
+  }
+  let list = Object.keys(map).map(Number).sort((a,b)=>b-a)
+    .map(e=>({exp:e, coef:map[e]})).filter(t=>Math.abs(t.coef)>1e-12);
+  return list;
+}
+
+function evalPoly(terms,x){
+  let y=0; for(const t of terms) y += t.coef*Math.pow(x,t.exp); return y;
+}
+
+function fmtNum(n){
+  return (Math.round(n*1000)/1000).toString();
+}
+
+function buildFormula(terms){
+  if(terms.length===0) return '<span>f(x) = 0</span>';
+  const lead = terms[0];
+  const c = lead.coef;
+  const coefStr = (Math.abs(c)===1 && lead.exp!==0) ? '' : fmtNum(Math.abs(c));
+  let leadPiece = lead.exp===0 ? fmtNum(c) : (coefStr + (lead.exp===1?'x':'x<sup>'+fmtNum(lead.exp)+'</sup>'));
+  let leadFull = (c<0?'−':'') + leadPiece;
+  let rest = 'f(x) = <span class="lead">'+leadFull+'</span>';
+  for(let i=1;i<terms.length;i++){
+    const t=terms[i]; const cc=t.coef; const abs=Math.abs(cc);
+    const cs=(abs===1&&t.exp!==0)?'':fmtNum(abs);
+    let p = t.exp===0? fmtNum(abs) : (cs + (t.exp===1?'x':'x<sup>'+fmtNum(t.exp)+'</sup>'));
+    rest += (cc<0?' − ':' + ')+p;
+  }
+  return rest;
+}
+
+function classify(terms){
+  if(terms.length===0) return {zero:true};
+  const lead = terms[0];
+  const n = lead.exp, an = lead.coef;
+  if(n===0) return {constant:true, value:an};
+  const nEven = Math.abs(n%2)<1e-9;
+  const aPos = an>0;
+  let plusInf, minusInf;
+  if(nEven){ plusInf = aPos? 1:-1; minusInf = plusInf; }
+  else { plusInf = aPos? 1:-1; minusInf = -plusInf; }
+  return {n, an, nEven, aPos, plusInf, minusInf};
+}
+
+function draw(terms, cls){
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width*dpr; canvas.height = 380*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const W=rect.width, H=380;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,W,H);
+
+  const xRange = 6;
+  const N = 400;
+  let ys=[];
+  for(let i=0;i<=N;i++){
+    const x = -xRange + (2*xRange*i/N);
+    ys.push(evalPoly(terms,x));
+  }
+  const core = ys.slice(Math.floor(N*0.15), Math.ceil(N*0.85)).filter(v=>isFinite(v));
+  let yMax = Math.max(1, ...core.map(v=>Math.abs(v))) * 1.35;
+
+  const originX = W/2, originY = H/2;
+  const sx = (W*0.42)/xRange;
+  const sy = (H*0.42)/yMax;
+
+  function px(x){return originX + x*sx;}
+
+  ctx.strokeStyle = '#1e293b'; ctx.lineWidth=1.5; ctx.fillStyle='#1e293b';
+  
+  // x-Achse
+  ctx.beginPath(); ctx.moveTo(15,originY); ctx.lineTo(W-23,originY); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(W-15, originY); ctx.lineTo(W-23, originY-5); ctx.lineTo(W-23, originY+5); ctx.closePath();
+  ctx.fill();
+
+  // y-Achse
+  ctx.beginPath(); ctx.moveTo(originX,H-15); ctx.lineTo(originX,23); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(originX, 15); ctx.lineTo(originX-5, 23); ctx.lineTo(originX+5, 23); ctx.closePath();
+  ctx.fill();
+
+  ctx.font='500 13px "CMU Sans Serif", sans-serif';
+  ctx.fillText('x', W-22, originY-10); ctx.fillText('y', originX+10, 22); ctx.fillText('O', originX+6, originY+18);
+
+  // Graph zeichnen
+  ctx.strokeStyle = '#dc2626'; ctx.lineWidth=2.5; ctx.beginPath();
+  let started=false;
+  for(let i=0;i<=N;i++){
+    const x = -xRange + (2*xRange*i/N);
+    let y = ys[i];
+    if(!isFinite(y)) {started=false; continue;}
+    let yc = Math.max(-H*0.55, Math.min(H*0.55, y*sy));
+    let plotY = originY - yc;
+    let plotX = px(x);
+    if(!started){ctx.moveTo(plotX,plotY); started=true;} else ctx.lineTo(plotX,plotY);
+  }
+  ctx.stroke();
+
+  // Pfeile für Grenzverhalten
+  function arrow(x,dir,color,label){
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=3;
+    const yTop = dir>0 ? 22 : H-22;
+    const lineEnd = dir>0 ? yTop + 8 : yTop - 8;
+    
+    ctx.beginPath(); ctx.moveTo(x,originY-dir*30); ctx.lineTo(x,lineEnd); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x,yTop); ctx.lineTo(x-6,yTop+dir*10); ctx.lineTo(x+6,yTop+dir*10); ctx.closePath(); ctx.fill();
+    ctx.font='600 13px "CMU Sans Serif", sans-serif';
+    ctx.fillText(label, x-14, dir>0? yTop-8 : yTop+22);
+  }
+  if(cls && !cls.zero && !cls.constant){
+    arrow(W-30, cls.plusInf, '#2563eb', cls.plusInf>0?'∞':'−∞');
+    arrow(30, cls.minusInf, '#16a34a', cls.minusInf>0?'∞':'−∞');
+  }
+}
+
+function update(){
+  errBox.textContent='';
+  let terms;
+  try{ terms = parsePoly(fxInput.value); }
+  catch(e){ errBox.textContent = typeof e==='string'?e:'Ungültige Eingabe.'; return; }
+
+  document.getElementById('formula').innerHTML = buildFormula(terms);
+  const cls = classify(terms);
+  const statsEl = document.getElementById('stats');
+  const limEl = document.getElementById('limits');
+  const merke = document.getElementById('merke');
+  merke.querySelectorAll('.active').forEach(e=>e.classList.remove('active'));
+
+  if(cls.zero){
+    statsEl.innerHTML = '<div>Nullfunktion.</div>';
+    limEl.innerHTML = '<div>f(x) = 0 für alle x</div>';
+  } else if(cls.constant){
+    statsEl.innerHTML = '<div>Grad n = 0 (konstante Funktion).</div>';
+    limEl.innerHTML = '<div>Kein Verhalten gegen ±∞ &ndash; f(x) bleibt konstant bei '+fmtNum(cls.value)+'.</div>';
+  } else {
+    statsEl.innerHTML = 
+      '<div>Grad <b>n = '+fmtNum(cls.n)+'</b> ('+(cls.nEven?'gerade':'ungerade')+')</div>'+
+      '<div>Leitkoeffizient <b>aₙ = '+fmtNum(cls.an)+'</b> ('+(cls.aPos?'positiv':'negativ')+')</div>';
+    
+    limEl.innerHTML =
+      '<div>für <span class="plus">x → ∞</span> gilt f(x) → <span class="res">'+(cls.plusInf>0?'∞':'−∞')+'</span></div>'+
+      '<div>für <span class="minus">x → −∞</span> gilt f(x) → <span class="res">'+(cls.minusInf>0?'∞':'−∞')+'</span></div>';
+    const colIdx = (cls.nEven? (cls.aPos?1:2) : (cls.aPos?3:4));
+    merke.querySelectorAll('thead th')[colIdx].classList.add('active');
+    merke.querySelectorAll('tbody tr')[0].children[colIdx].classList.add('active');
+    merke.querySelectorAll('tbody tr')[1].children[colIdx].classList.add('active');
+  }
+  draw(terms, cls.zero||cls.constant?null:cls);
+}
+
+fxInput.addEventListener('input', update);
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{fxInput.value=c.dataset.f; update();}));
+window.addEventListener('resize', update);
+update();
+</script>
+</body>
+</html>
